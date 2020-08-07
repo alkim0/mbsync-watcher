@@ -1,0 +1,7 @@
+---
+# Interval between polls in seconds
+check_interval: 300
+
+# List of commands to run after sync
+post_sync_hooks:
+  - notmuch new
