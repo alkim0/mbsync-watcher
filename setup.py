@@ -18,18 +18,21 @@ class CustomInstallCommand(install):
         else:
             config_path = os.path.expanduser("~/.mbsync_watcher.yaml")
 
-        with open(config_path, "wb") as f:
-            f.write(resource_string("mbsync_watcher", "../config.yaml"))
+        if not os.path.exists(config_path):
+            with open(config_path, "wb") as f:
+                f.write(resource_string("mbsync_watcher", "../config.yaml"))
 
-        with open(
-            os.path.expanduser("~/.config/systemd/user/mbsync-watcher.service"), "wb"
-        ) as f:
-            f.write(resource_string("mbsync_watcher", "../mbsync-watcher.service"))
+        service_path = os.path.expanduser(
+            "~/.config/systemd/user/mbsync-watcher.service"
+        )
+        if not os.path.exists(service_path):
+            with open(service_path, "wb") as f:
+                f.write(resource_string("mbsync_watcher", "../mbsync-watcher.service"))
 
 
 setup(
     name="mbsync-watcher",
-    version="0.1.0",
+    version="0.1.2",
     packages=["mbsync_watcher"],
     description="Watch mailboxes using IDLE and sync with mbsync.",
     author="Albert Kim",
