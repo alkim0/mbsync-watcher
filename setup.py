@@ -3,6 +3,29 @@
 import os
 
 from setuptools import setup
+from setuptools.command.install import install
+from pkg_resources import resource_string
+
+
+class CustomInstallCommand(install):
+    def run(self):
+        install.run(self)
+        config_home = os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config"))
+
+        if os.path.isdir(config_home):
+            os.makedirs(os.path.join(config_home, "mbsync_watcher"), exist_ok=True)
+            config_path = os.path.join(config_home, "mbsync_watcher", "config.yaml")
+        else:
+            config_path = os.path.expanduser("~/.mbsync_watcher.yaml")
+
+        with open(config_path, "wb") as f:
+            f.write(resource_string("mbsync_watcher", "../config.yaml"))
+
+        with open(
+            os.path.expanduser("~/.config/systemd/user/mbsync-watcher.service"), "wb"
+        ) as f:
+            f.write(resource_string("mbsync_watcher", "../mbsync-watcher.service"))
+
 
 setup(
     name="mbsync-watcher",
@@ -13,8 +36,6 @@ setup(
     author_email="alkim@alkim.org",
     install_requires=["pyyaml", "aioimaplib"],
     scripts=["bin/mbsync_watcher"],
-    data_files=[
-        (os.path.expanduser("~/.config/mbsync_watcher"), ["config.yaml"]),
-        (os.path.expanduser("~/.config/systemd/user"), ["mbsync-watcher.service"]),
-    ],
+    package_data={"": ["config.yaml", "mbsync-watcher.service"]},
+    cmdclass={"install": CustomInstallCommand,},
 )
