@@ -84,8 +84,8 @@ async def watch(mbsyncrc, channel, queue):
 
         asyncio.ensure_future(imap_client.idle())
         while True:
-            msg = await imap_client.wait_server_push()
-            if "EXISTS" in msg:
+            msgs = await imap_client.wait_server_push()
+            if any("EXISTS" in msg for msg in msgs):
                 queue.put_nowait(time.time())
 
 
