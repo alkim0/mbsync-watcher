@@ -32,12 +32,15 @@ class CustomInstallCommand(install):
 
 setup(
     name="mbsync-watcher",
-    version="0.1.2",
+    version="0.1.3",
     packages=["mbsync_watcher"],
     description="Watch mailboxes using IDLE and sync with mbsync.",
     author="Albert Kim",
     author_email="alkim@alkim.org",
-    install_requires=["pyyaml", "imapclient @ https://github.com/mjs/imapclient/archive/master.zip"],
+    install_requires=[
+        "pyyaml",
+        "imapclient @ https://github.com/mjs/imapclient/archive/master.zip",
+    ],
     scripts=["bin/mbsync_watcher"],
     package_data={"": ["config.yaml", "mbsync-watcher.service"]},
     cmdclass={
