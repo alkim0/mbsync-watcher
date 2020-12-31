@@ -37,8 +37,10 @@ setup(
     description="Watch mailboxes using IDLE and sync with mbsync.",
     author="Albert Kim",
     author_email="alkim@alkim.org",
-    install_requires=["pyyaml", "aioimaplib"],
+    install_requires=["pyyaml", "imapclient @ https://github.com/mjs/imapclient/archive/master.zip"],
     scripts=["bin/mbsync_watcher"],
     package_data={"": ["config.yaml", "mbsync-watcher.service"]},
-    cmdclass={"install": CustomInstallCommand,},
+    cmdclass={
+        "install": CustomInstallCommand,
+    },
 )
