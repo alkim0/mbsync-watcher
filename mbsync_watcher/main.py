@@ -42,8 +42,16 @@ def watch(mbsyncrc, channel, queue):
     imap_client.select_folder("INBOX")
     imap_client.idle()
 
+    last_connected = time.monotonic()
+
     while True:
-        responses = imap_client.idle_check()
+        now = time.monotonic()
+        if now - last_connected >= 13 * 60:
+            imap_client.idle_done()
+            imap_client.idle()
+            last_connected = now
+
+        responses = imap_client.idle_check(timeout=13 * 60)
         print("idle msgs for {}: {}".format(channel, responses), flush=True)
         if any("EXISTS" in r[1].decode() for r in responses):
             print("idle alarm queued for {}".format(channel), flush=True)
